@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 506e408b46e88d64ea746431cd7f79bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapType: 0
+  mapType: 2
   mapSeed: 9841
   rows: 2
   columns: 2

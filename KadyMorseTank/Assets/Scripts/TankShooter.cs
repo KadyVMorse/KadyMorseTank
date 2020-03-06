@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class TankShooter : MonoBehaviour
 {
+    //variables of game object and of the tank data
     public GameObject cannonBall;
 
     public GameObject firePoint;
@@ -15,6 +16,7 @@ public class TankShooter : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // defines the gameobject at the start of the game 
         data = gameObject.GetComponent<TankData>();
     }
 

@@ -7,6 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(TankMotor))]
 public class SampleAIControllerThree : MonoBehaviour
 {
+    // sets the variables and what they are equal to 
     public Transform target;
     private TankMotor motor;
     private TankData data;
@@ -24,6 +25,7 @@ public class SampleAIControllerThree : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //defines the game objects at the start of the game 
         data = gameObject.GetComponent<TankData>();
         motor = gameObject.GetComponent<TankMotor>();
         tf = gameObject.GetComponent<Transform>();
@@ -32,6 +34,7 @@ public class SampleAIControllerThree : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //if the ai is in attack mode then it will chase the player 
         if (attackMode == AttackMode.Chase)
         {
             if (avoidanceStage != AvoidanceStage.None)

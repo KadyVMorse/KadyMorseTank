@@ -5,11 +5,14 @@ using System.Xml;
 using UnityEditor.VersionControl;
 using UnityEngine;
 
+//requires these componets for this code to work 
+
 [RequireComponent(typeof(TankData))]
 [RequireComponent(typeof(TankMotor))]
 [RequireComponent(typeof(TankShooter))]
 public class SampleAIControllerFinal : MonoBehaviour
 {
+    //defines the differnt personalties and the differnt variables and game objects 
     public enum AIState { Chase, ChaseAndFire, CheckForFlee, Flee, Rest, Patrol }
 
     public enum Personalities { Inky, Pinky, Blinky, Clay }
@@ -56,8 +59,10 @@ public class SampleAIControllerFinal : MonoBehaviour
 
 
     // Start is called before the first frame update
+  
     void Start()
     {
+        //defines the variables 
         data = gameObject.GetComponent<TankData>();
         motor = gameObject.GetComponent<TankMotor>();
         tf = gameObject.GetComponent<Transform>();
@@ -68,6 +73,7 @@ public class SampleAIControllerFinal : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //switch for the designer to edit and defines each case of personality 
         switch (personality)
         {
             case Personalities.Inky:
@@ -111,6 +117,7 @@ public class SampleAIControllerFinal : MonoBehaviour
         return true;
     }
 
+    //type of personalties and is defined 
     private void Chase(GameObject targetGameObject)
     {
         // TODO: Integrate obstacle avoidance
@@ -129,6 +136,7 @@ public class SampleAIControllerFinal : MonoBehaviour
         }
     }
 
+    //defines inkys state and what it does if encounters player 
     private void Inky()
     {
         switch (aiState)
@@ -222,6 +230,7 @@ public class SampleAIControllerFinal : MonoBehaviour
         motor.Move(data.moveSpeed);
     }
 
+    //enemies can shoot 
     private void Shoot()
     {
         shooter.Shoot();
@@ -237,6 +246,7 @@ public class SampleAIControllerFinal : MonoBehaviour
         stateEnterTime = Time.time;
     }
 
+    //can detect objects such as player 
     public bool CanMove(float speed)
     {
         RaycastHit hit;
@@ -250,6 +260,7 @@ public class SampleAIControllerFinal : MonoBehaviour
         return true;
     }
 
+    //can avoid objects and go around them 
     private void Avoid()
     {
         if (avoidanceStage == AvoidanceStage.Rotate)
@@ -282,6 +293,7 @@ public class SampleAIControllerFinal : MonoBehaviour
         }
     }
 
+    //can patrol an area 
     void Patrol()
     {
         if (motor.RotateTowards(waypoints[currentWaypoint].position, data.rotateSpeed))

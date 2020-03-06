@@ -6,6 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(TankMotor))]
 public class SampleAIController : MonoBehaviour
 {
+    //adds varablies,list and defines gamobjects 
     public Transform[] waypoints;
 
     private TankData data;
@@ -27,6 +28,7 @@ public class SampleAIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //defines each variable at the start of the game 
         data = gameObject.GetComponent<TankData>();
         motor = gameObject.GetComponent<TankMotor>();
         tf = gameObject.GetComponent<Transform>();
@@ -35,6 +37,7 @@ public class SampleAIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //if the enemy rotates and senses nothing then it will do nothing but when it does it will move forward 
         if (motor.RotateTowards(waypoints[currentWaypoint].position, data.rotateSpeed))
         {
             // Do nothing!

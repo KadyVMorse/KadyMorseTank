@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//will attach these codes to the objects that have this code 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(TankData))]
 public class TankMotor : MonoBehaviour
 {
+    //private variables that relate to the code only and defines them
     private CharacterController characterController;
     private Transform tf;
     private TankData data;
@@ -13,6 +15,7 @@ public class TankMotor : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //creates the character controller and what they are equal to
         characterController = gameObject.GetComponent<CharacterController>();
         tf = gameObject.GetComponent<Transform>();
         data = gameObject.GetComponent<TankData>();

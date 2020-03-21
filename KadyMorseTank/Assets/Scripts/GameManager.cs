@@ -9,6 +9,17 @@ public class GameManager : MonoBehaviour
     //states the game objects in the level and the list of players or enemy/spawnpoints for each to be generated 
     public static GameManager instance;
 
+    public enum GameState 
+    { 
+        MainMenu,
+        OptionsMenu,
+        StartMenu,
+        Gameplay,
+        GameOver,
+        Paused
+    }
+    public GameState cureentGameState =GameState.MainMenu;
+    public GameState previousGameState;
     public GameObject levelGameObject;
     public GameObject instantiatedPlayerTank;
     public GameObject playerTankPrefab;
@@ -52,6 +63,103 @@ public class GameManager : MonoBehaviour
         {
             SpawnPlayer(RandomSpawnPoint(playerSpawnPoints));
         }
+    }
+
+    public void ChangeState(GameState newstate)
+    {
+        switch (cureentGameState)
+        {
+            case GameState.MainMenu:
+                if(newstate == GameState.OptionsMenu)
+                {
+                    //Diable the input from main menu
+                    //Activate options menu
+                }
+                if(newstate == GameState.StartMenu)
+                {
+                    //disable the input from main menu
+                    //activate game start menu
+                }
+                break;
+            case GameState.OptionsMenu:
+                if (newstate == GameState.MainMenu)
+                {
+                    //save changes to option
+                    //deativate options menu 
+                    //deactivate Mani Menu
+                }
+                if (newstate == GameState.Paused)
+                {
+                    //save changes to options 
+                    //deactivate options menu 
+                    //Reactivate paused menu
+                }
+
+                break;
+            case GameState.StartMenu:
+                if(newstate == GameState.MainMenu)
+                {
+                    //deactivate start menu 
+                    //reactivate main menu
+                }
+                if(newstate == GameState.Gameplay)
+                {
+                    //deactivate our start menu 
+                    //Load our level//enemies
+                   MapGenerator mapGenerator = levelGameObject.GetComponent<MapGenerator>();
+                    mapGenerator.StartGame();
+                }
+                break;
+            case GameState.Gameplay:
+                if (newstate == GameState.Paused)
+                {
+                    //Pause the level
+                    //pull up pause menu
+                }
+                if(newstate == GameState.GameOver)
+                {
+               // handle gameover behaviors
+               //save new highscores
+               //replay the game
+                }
+                break;
+            case GameState.Paused:
+                if(newstate == GameState.Gameplay)
+                {
+                    //restart the level 
+                    //activate main menu  
+                }
+                if(newstate == GameState.MainMenu)
+                {
+                    //switch to main menu and end level
+                    //Activate main menu
+                }
+                if(newstate == GameState.OptionsMenu)
+                {
+                    //deactivate pause menu ui
+                    //activate options menu 
+                }
+                break;
+            case GameState.GameOver:
+                if(newstate == GameState.Gameplay)
+                {
+                    //reload the gameplay score/end the level/restart the level
+                }
+                if (newstate == GameState.MainMenu)
+                {
+                    //switch to main menu scene/end the level
+                    //Activate main menu
+                }
+                break;
+            default:
+                break;
+        }
+       if(cureentGameState == GameState.Gameplay && newstate == GameState.MainMenu)
+        {
+
+        }
+        previousGameState = cureentGameState;
+        cureentGameState = newstate;
     }
 
     //defines the randomspwanpoint used earlier in code 

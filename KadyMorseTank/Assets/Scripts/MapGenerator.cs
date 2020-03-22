@@ -36,30 +36,7 @@ public class MapGenerator : MonoBehaviour
     {
         //the gamemanger on start will get the map generator and switch it to a certain map type
         GameManager.instance.levelGameObject = this.gameObject;
-        switch (mapType)
-        {
-            //the map of the day is the map that uses the current time and date that selects its map 
-            case MapType.MapOfTheDay:
-                mapSeed = DateToInt(DateTime.Now.Date);
-                break;
-                //the case of the random map it generates a random map 
-            case MapType.Random:
-                mapSeed = DateToInt(DateTime.Now);
-                break;
-                //the orginal map 
-            case MapType.Seeded:
-                break;
-            default:
-                //if the map generator is not implemented then it will send a error 
-                Debug.LogError("[MapGenerator] Map type not implemented.");
-                break;
-        }
-        //generates the grid 
-        GenerateGrid();
-        //spawnsplayer from the game manager to a spawn point on each map randomly 
-        GameManager.instance.SpawnPlayer(GameManager.instance.RandomSpawnPoint(GameManager.instance.playerSpawnPoints));
-        // //spawnsenmies from the game manager to a spawn point on each map randomly 
-        GameManager.instance.SpawnEnemies();
+  
     }
 
     // Update is called once per frame
@@ -83,6 +60,33 @@ public class MapGenerator : MonoBehaviour
                dateToUse.Day + dateToUse.Hour + 
                dateToUse.Minute + dateToUse.Second + 
                dateToUse.Millisecond;
+    }
+    public void StartGame()
+    {
+        switch (mapType)
+        {
+            //the map of the day is the map that uses the current time and date that selects its map 
+            case MapType.MapOfTheDay:
+                mapSeed = DateToInt(DateTime.Now.Date);
+                break;
+            //the case of the random map it generates a random map 
+            case MapType.Random:
+                mapSeed = DateToInt(DateTime.Now);
+                break;
+            //the orginal map 
+            case MapType.Seeded:
+                break;
+            default:
+                //if the map generator is not implemented then it will send a error 
+                Debug.LogError("[MapGenerator] Map type not implemented.");
+                break;
+        }
+        //generates the grid 
+        GenerateGrid();
+        //spawnsplayer from the game manager to a spawn point on each map randomly 
+        GameManager.instance.SpawnPlayer(GameManager.instance.RandomSpawnPoint(GameManager.instance.playerSpawnPoints));
+        // //spawnsenmies from the game manager to a spawn point on each map randomly 
+        GameManager.instance.SpawnEnemies();
     }
 
     public void GenerateGrid()

@@ -27,6 +27,10 @@ public class GameManager : MonoBehaviour
     public GameObject[] enemyTankPrefabs;
     public List<GameObject> playerSpawnPoints;
     public List<GameObject> enemySpawnPoints;
+    public int highScore;
+    public float fxVolume;
+    public float musicVolume;
+    public List<ScoreData> highScores;
 
     // Runs before any Start() functions run
     //when the game first loads up it is awake and will call on these first before start 
@@ -50,9 +54,14 @@ public class GameManager : MonoBehaviour
     //tells the game when it starts what these varabiles mean and that they are a list of game objects 
     void Start()
     {
+        highScores = new List<ScoreData>();
         instantiatedEnemyTanks = new List<GameObject>();
         playerSpawnPoints = new List<GameObject>();
         enemySpawnPoints = new List<GameObject>();
+        LoadPrefs();
+        highScores.Sort();
+        highScores.Reverse();
+        highScores = highScores.GetRange(0, 5);
     }
 
     //on update of the game 
@@ -194,5 +203,99 @@ public class GameManager : MonoBehaviour
             //adds the instiated enemy tank 
             instantiatedEnemyTanks.Add(instantiatedEnemyTank);
         }
+    }
+    public void LoadPrefs()
+    {
+        if (PlayerPrefs.HasKey("HighScore"))
+        {
+            highScore = PlayerPrefs.GetInt("HighScore");
+        }
+        else
+        {
+            highScore = 0;
+        }
+        if (PlayerPrefs.HasKey("MusicVolume"))
+        {
+            musicVolume = PlayerPrefs.GetFloat("MusicVolume");
+
+        }
+        else
+        {
+            musicVolume = 1.0f;
+        }
+        if (PlayerPrefs.HasKey("FXVolume"))
+        {
+            fxVolume = PlayerPrefs.GetFloat("FXVolume");
+        }
+        else
+        {
+            fxVolume = 1.0f;
+        }
+        if (PlayerPrefs.HasKey("Score1"))
+        {
+            highScores[0].name = PlayerPrefs.GetString("Name1");
+            highScores[0].score = PlayerPrefs.GetFloat("Score1");
+        }
+        else
+        {
+            highScores.Add(new ScoreData("Adam", 0));
+        }
+        if (PlayerPrefs.HasKey("Score2"))
+        {
+            highScores.Add(new ScoreData(PlayerPrefs.GetString("Name2"), PlayerPrefs.GetFloat("Score2")));
+        }
+        else
+        {
+            highScores.Add(new ScoreData("Bob", 0));
+        }
+        if (PlayerPrefs.HasKey("Score3"))
+        {
+            highScores.Add(new ScoreData(PlayerPrefs.GetString("Name3"), PlayerPrefs.GetFloat("Score3")));
+        }
+        else
+        {
+            highScores.Add(new ScoreData("Charles", 0));
+        }
+        if (PlayerPrefs.HasKey("Score4"))
+        {
+            highScores.Add(new ScoreData(PlayerPrefs.GetString("Name4"), PlayerPrefs.GetFloat("Score4")));
+        }
+        else
+        {
+            highScores.Add(new ScoreData("Dan", 0));
+        }
+        if (PlayerPrefs.HasKey("Score5"))
+        {
+            highScores.Add(new ScoreData(PlayerPrefs.GetString("Name5"), PlayerPrefs.GetFloat("Score5")));
+        }
+        else
+        {
+            highScores.Add(new ScoreData("Eugene", 0));
+        }
+
+    }
+
+
+    public void SavePrefs()
+    {
+        PlayerPrefs.SetInt("HighScore", highScore);
+        PlayerPrefs.SetFloat("MusicVolume", musicVolume);
+        PlayerPrefs.SetFloat("FXVolume", fxVolume);
+        PlayerPrefs.SetString("Name1", highScores[0].name);
+        PlayerPrefs.SetString("Name2", highScores[1].name);
+        PlayerPrefs.SetString("Name3", highScores[2].name);
+        PlayerPrefs.SetString("Name4", highScores[3].name);
+        PlayerPrefs.SetString("Name5", highScores[4].name);
+        PlayerPrefs.SetFloat("Score1", highScores[0].score);
+        PlayerPrefs.SetFloat("Score2", highScores[1].score);
+        PlayerPrefs.SetFloat("Score3", highScores[2].score);
+        PlayerPrefs.SetFloat("Score4", highScores[3].score);
+        PlayerPrefs.SetFloat("Score5", highScores[4].score);
+        PlayerPrefs.Save();
+
+    }
+    private void OnApplicationQuit()
+    {
+        SavePrefs();
     }
 }

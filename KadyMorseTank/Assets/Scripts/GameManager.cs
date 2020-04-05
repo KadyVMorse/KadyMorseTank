@@ -3,14 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = System.Random;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    //states the game objects in the level and the list of players or enemy/spawnpoints for each to be generated 
+    //states the game objects in the level and the list of players or enemy/spawnpoints for each to be generated,the volume and the differnt game states
     public static GameManager instance;
+    public Slider mVolume;
+    public Slider fVolume;
+    public AudioSource myMusic;
 
-    public enum GameState 
-    { 
+    public enum GameState
+    {
         MainMenu,
         OptionsMenu,
         StartMenu,
@@ -18,7 +22,8 @@ public class GameManager : MonoBehaviour
         GameOver,
         Paused
     }
-    public GameState cureentGameState =GameState.MainMenu;
+
+    public GameState currentGameState = GameState.MainMenu;
     public GameState previousGameState;
     public GameObject levelGameObject;
     public GameObject instantiatedPlayerTank;
@@ -31,12 +36,15 @@ public class GameManager : MonoBehaviour
     public float fxVolume;
     public float musicVolume;
     public List<ScoreData> highScores;
+    public int numberOfPlayers;
+    public GameObject optionsMenu;
+
 
     // Runs before any Start() functions run
     //when the game first loads up it is awake and will call on these first before start 
     void Awake()
     {
-        //if the instance equalls nothing then it will equal to game manager 
+        //if the instance equals nothing then it will equal to game manager 
         if (instance == null)
         {
             instance = this;
@@ -50,7 +58,6 @@ public class GameManager : MonoBehaviour
         //if we load up a new scene it will not destroy the gamemanager 
         DontDestroyOnLoad(gameObject);
     }
-
     //tells the game when it starts what these varabiles mean and that they are a list of game objects 
     void Start()
     {
@@ -63,147 +70,142 @@ public class GameManager : MonoBehaviour
         highScores.Reverse();
         highScores = highScores.GetRange(0, 5);
     }
-
     //on update of the game 
     void Update()
     {
         //if the playertank equals null in the scene then they will spawn at a random spawn point 
-        if (instantiatedPlayerTank == null)
+        if (currentGameState == GameState.Gameplay && instantiatedPlayerTank == null)
         {
             SpawnPlayer(RandomSpawnPoint(playerSpawnPoints));
         }
+        //sets the music volume for the slider on update 
+        myMusic.volume = mVolume.value;
+
+        
     }
 
-    public void ChangeState(GameState newstate)
+    //states the switchs of the differnt game states 
+    public void ChangeState(GameState newState)
     {
-        switch (cureentGameState)
+        switch (currentGameState)
         {
             case GameState.MainMenu:
-                if(newstate == GameState.OptionsMenu)
+                if (newState == GameState.OptionsMenu)
                 {
-                    //Diable the input from main menu
-                    //Activate options menu
+                    
+                    // Disable input from main menu.
+                    // Activate options menu
                 }
-                if(newstate == GameState.StartMenu)
+                if (newState == GameState.StartMenu)
                 {
-                    //disable the input from main menu
-                    //activate game start menu
+                    // Disable input from mainmenu.
+                    // Activate game start menu
                 }
                 break;
             case GameState.OptionsMenu:
-                if (newstate == GameState.MainMenu)
+                if (newState == GameState.MainMenu)
                 {
-                    //save changes to option
-                    //deativate options menu 
-                    //deactivate Mani Menu
+                    // Save changes to options
+                    // Deactivate options menu.
+                    // Reactivate Main Menu
                 }
-                if (newstate == GameState.Paused)
+                if (newState == GameState.Paused)
                 {
-                    //save changes to options 
-                    //deactivate options menu 
-                    //Reactivate paused menu
+                    // Save changes to options
+                    // Deactivate options menu
+                    // Reactivate paused menu
                 }
-
                 break;
             case GameState.StartMenu:
-                if(newstate == GameState.MainMenu)
+                if (newState == GameState.MainMenu)
                 {
-                    //deactivate start menu 
-                    //reactivate main menu
+                    // Deactivate Start Menu
+                    // Reactivate Main Menu
                 }
-                if(newstate == GameState.Gameplay)
+                if (newState == GameState.Gameplay)
                 {
-                    //deactivate our start menu 
-                    //Load our level//enemies
-                   MapGenerator mapGenerator = levelGameObject.GetComponent<MapGenerator>();
+                    // Deactivate our start menu
+                    // Load our level / spawn players / spawn enemies
+                    MapGenerator mapGenerator = levelGameObject.GetComponent<MapGenerator>();
                     mapGenerator.StartGame();
                 }
                 break;
             case GameState.Gameplay:
-                if (newstate == GameState.Paused)
+                if (newState == GameState.Paused)
                 {
-                    //Pause the level
-                    //pull up pause menu
+                    // Pause the simulation.
+                    // Pull up pause menu.
                 }
-                if(newstate == GameState.GameOver)
+                if (newState == GameState.GameOver)
                 {
-               // handle gameover behaviors
-               //save new highscores
-               //replay the game
+                    // Handle game over behaviors
+                    // Saving new high scores
                 }
                 break;
             case GameState.Paused:
-                if(newstate == GameState.Gameplay)
+                if (newState == GameState.Gameplay)
                 {
-                    //restart the level 
-                    //activate main menu  
+                    // Restart the simulation
+                    // Remove the pause menu
                 }
-                if(newstate == GameState.MainMenu)
+                if (newState == GameState.MainMenu)
                 {
-                    //switch to main menu and end level
-                    //Activate main menu
+                    // Switch to main menu scene/end the simulation
+                    // Activate main menu
                 }
-                if(newstate == GameState.OptionsMenu)
+                if (newState == GameState.OptionsMenu)
                 {
-                    //deactivate pause menu ui
-                    //activate options menu 
+                    // Deactivate pause menu ui
+                    // Activate options menu ui
                 }
                 break;
             case GameState.GameOver:
-                if(newstate == GameState.Gameplay)
+                if (newState == GameState.Gameplay)
                 {
-                    //reload the gameplay score/end the level/restart the level
+                    // Reload the gameplay scene/end the simulation/restart the simulation
                 }
-                if (newstate == GameState.MainMenu)
+                if (newState == GameState.MainMenu)
                 {
-                    //switch to main menu scene/end the level
-                    //Activate main menu
+                    // Switch to main menu scene/end the sim
+                    // Activate main menu
                 }
                 break;
             default:
                 break;
         }
-       if(cureentGameState == GameState.Gameplay && newstate == GameState.MainMenu)
-        {
-
-        }
-        previousGameState = cureentGameState;
-        cureentGameState = newstate;
+        previousGameState = currentGameState;
+        currentGameState = newState;
     }
 
-    //defines the randomspwanpoint used earlier in code 
     public GameObject RandomSpawnPoint(List<GameObject> spawnPoints)
     {
         // Get a random spawn point from inside our list of spawn points.
         int spawnToGet = UnityEngine.Random.Range(0, spawnPoints.Count - 1);
         return spawnPoints[spawnToGet];
     }
-
-    //defines the spawn player game object 
+    //spawns the player 
     public void SpawnPlayer(GameObject spawnPoint)
     {
-        //says what our instianted player tank means and instatiates the factors such as prefab the postion and the quternion identity 
         instantiatedPlayerTank = Instantiate(playerTankPrefab, spawnPoint.transform.position, Quaternion.identity);
     }
-    //defines and is the code to spawn enemies
+
+    //spawn the enemies
     public void SpawnEnemies()
     {
         // Write code for spawning enemies.
-        //if there is no enemy prefabs then it will send an error syaing its empty 
         if (enemyTankPrefabs.Length == 0)
         { Debug.LogWarning("Enemy tank prefabs is empty"); }
-        //for the intger of the enmey tank prefs
         for (int i = 0; i < enemyTankPrefabs.Length; ++i)
         {
-            //if there is no enemy spawn points then we get a messege saying that they are empty 
             if (enemySpawnPoints.Count == 0)
             { Debug.LogWarning("Enemy spawn points list is empty."); }
-            //the gameobject equals the instatinated prefab,the spawnpoint,location,and the identity 
-            GameObject instantiatedEnemyTank =  Instantiate(enemyTankPrefabs[i], RandomSpawnPoint(enemySpawnPoints).transform.position, Quaternion.identity);
-            //adds the instiated enemy tank 
+            GameObject instantiatedEnemyTank =
+                Instantiate(enemyTankPrefabs[i], RandomSpawnPoint(enemySpawnPoints).transform.position, Quaternion.identity);
             instantiatedEnemyTanks.Add(instantiatedEnemyTank);
         }
     }
+
+    //loads the high score,Music Volme,FX Volume,and the High Score List
     public void LoadPrefs()
     {
         if (PlayerPrefs.HasKey("HighScore"))
@@ -217,7 +219,6 @@ public class GameManager : MonoBehaviour
         if (PlayerPrefs.HasKey("MusicVolume"))
         {
             musicVolume = PlayerPrefs.GetFloat("MusicVolume");
-
         }
         else
         {
@@ -233,8 +234,7 @@ public class GameManager : MonoBehaviour
         }
         if (PlayerPrefs.HasKey("Score1"))
         {
-            highScores[0].name = PlayerPrefs.GetString("Name1");
-            highScores[0].score = PlayerPrefs.GetFloat("Score1");
+            highScores.Add(new ScoreData(PlayerPrefs.GetString("Name1"), PlayerPrefs.GetFloat("Score1")));
         }
         else
         {
@@ -275,7 +275,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-
+    //This saves the hiagh scores,Music volume,Fx Volume
     public void SavePrefs()
     {
         PlayerPrefs.SetInt("HighScore", highScore);
@@ -292,10 +292,13 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetFloat("Score4", highScores[3].score);
         PlayerPrefs.SetFloat("Score5", highScores[4].score);
         PlayerPrefs.Save();
-
     }
+
+    //When players quit the game it will save there prefs
     private void OnApplicationQuit()
     {
         SavePrefs();
     }
+
+  
 }
